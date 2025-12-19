@@ -15,12 +15,15 @@ raylib (graphics) + OpenCV (vision) + MediaPipe Hands (tracking)
 ```
 
 ## requirements
-- Python 3.11.x 
+- Python 3.11.x
+- raylib 5.5
+- OpenCV 4.11.0
+- mediapipe 0.10.31
 
 ## 🚀 Quick Start
 ```bash
 pip install raylib opencv-python mediapipe
-python handpac_maze.py
+python main.py
 ```
 Point webcam at hands, extend index fingers, gesture away!
 
