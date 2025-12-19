@@ -48,10 +48,6 @@ The ghost enemies in Hand Pac-Man use the Breadth-First Search (BFS) algorithm t
 * gesture_right: close the right hand and keep the left opened
 * gesture_left: close the left hand and keep the right opened
 
-### Gameplay Screenshots
-
-*(Add gameplay screenshots here)*
-
 ---
 
 ## Demo Video
