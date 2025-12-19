@@ -39,7 +39,7 @@ The ghost enemies in Hand Pac-Man use the Breadth-First Search (BFS) algorithm t
 
 ---
 
-## Demonstration (Images)
+## Demonstration
 
 ### Hand Gestures
 
