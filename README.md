@@ -121,8 +121,9 @@ venv\Scripts\activate
 
 ### 4. Install Dependencies
 
-```bash
-pip install mediapipe==0.10.31 opencv-python==4.11.0 raylib==5.5
+Install all required libraries using the provided requirements.txt file:
+```
+pip install -r requirements.txt
 ```
 
 ---
