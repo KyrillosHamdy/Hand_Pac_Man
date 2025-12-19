@@ -152,9 +152,6 @@ Hand_Pac_Man/
 ├── README.md
 └── requirements.txt
 ```
-
-*(Structure may vary depending on implementation.)*
-
 ---
 
 ## License
