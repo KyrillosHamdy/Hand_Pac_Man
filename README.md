@@ -14,6 +14,9 @@ Real-time webcam tracking via MediaPipe + raylib rendering. No controllers neede
 raylib (graphics) + OpenCV (vision) + MediaPipe Hands (tracking)
 ```
 
+## requirements
+- Python 3.11.x 
+
 ## 🚀 Quick Start
 ```bash
 pip install raylib opencv-python mediapipe
