@@ -62,7 +62,7 @@ When Pac-Man collides with the monster ghost:
 
 ## Demo Video
 
-[Hand Pac-Man Demo](https://drive.google.com/file/d/1rKVaTpi0GdyrWnNlxQwOyEZ-tZoUzTXI/view?usp=drive_link)
+[Hand Pac-Man Demo](https://drive.google.com/file/d/1uEad-6Im5aVUJORcqmR0f5HOyE7kjPS3/view?usp=sharing)
 
 
 ---
