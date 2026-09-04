@@ -50,6 +50,16 @@ The ghost enemies in Hand Pac-Man use the Breadth-First Search (BFS) algorithm t
 
 ---
 
+## Game Over Mechanics
+
+When Pac-Man collides with the monster ghost:
+* **Game Over Message**: "Game Over!" is displayed in white text on the screen
+* **Duration**: The game over state lasts for 2 seconds before automatically resetting
+* **Reset**: After 2 seconds, Pac-Man and the monster return to the starting position
+* **Continuous Gameplay**: The player can immediately continue playing after the reset
+
+---
+
 ## Demo Video
 
 [Hand Pac-Man Demo](https://drive.google.com/file/d/1rKVaTpi0GdyrWnNlxQwOyEZ-tZoUzTXI/view?usp=drive_link)
