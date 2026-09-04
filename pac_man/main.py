@@ -1,7 +1,7 @@
 import raylib as rl
 import cv2 as cv
 import hand_tracking.hand_tracking_module as htm
-from constants import TILE_SIZE, ROWS, COLS, PLAYER_TIME_STEP, MONSTER_TIME_STEP
+from constants import * 
 from game import Game, draw_blocks, bfs, cell
 
 def main():
@@ -14,58 +14,70 @@ def main():
     rl.InitWindow(COLS * TILE_SIZE, ROWS * TILE_SIZE, "pac".encode("utf-8"))
     rl.SetTargetFPS(60)
 
+    game_over = False
+    game_over_timer = 0.0
+    
     while not rl.WindowShouldClose():
-        success, frame = cap.read()
+        _, frame = cap.read()
         frame = cv.flip(frame, 1)
         frame = detector.find_hands(frame)
         index_finger, hand_status = detector.find_position(frame)
         
-        game.player_elapsed += rl.GetFrameTime()
-        game.monster_elapsed += rl.GetFrameTime()
+        if not game_over:
+            game.player_elapsed += rl.GetFrameTime()
+            game.monster_elapsed += rl.GetFrameTime()
         
-        if game.player_elapsed >= PLAYER_TIME_STEP and index_finger and hand_status == [1, 1]:
-            next_pos = cell(game.pac_man.x, game.pac_man.y)
-            game.moved = False
+            if game.player_elapsed >= PLAYER_TIME_STEP and index_finger and hand_status == [1, 1]:
+                next_pos = cell(game.pac_man.x, game.pac_man.y)
+                game.moved = False
+                
+                for lm in index_finger:
+                    #left hand
+                    if lm[3] == 0:
+                        if lm[0] == 8: left_tip = lm[2]
+                        if lm[0] == 6: left_pip = lm[2]
+                    
+                    #right hand
+                    if lm[3] == 1:
+                        if lm[0] == 8: right_tip = lm[2]
+                        if lm[0] == 6: right_pip = lm[2]
+                
+                # update x
+                if left_tip < left_pip and right_tip > right_pip:
+                    next_pos.x += 1; game.moved = True
+                if left_tip > left_pip and right_tip < right_pip:
+                    next_pos.x -= 1; game.moved = True
+                    
+                # update y
+                if left_tip < left_pip and right_tip < right_pip:
+                    next_pos.y -= 1; game.moved = True
+                if left_tip > left_pip and right_tip > right_pip:
+                    next_pos.y += 1; game.moved = True
+                    
+                if game.moved:
+                    if game.is_valid_pos(next_pos) and game.player_elapsed >= PLAYER_TIME_STEP:
+                        game.pac_man = next_pos
+                        game.player_elapsed = 0
+                    else:
+                        game.player_elapsed = PLAYER_TIME_STEP
             
-            for lm in index_finger:
-                #left hand
-                if lm[3] == 0:
-                    if lm[0] == 8: left_tip = lm[2]
-                    if lm[0] == 6: left_pip = lm[2]
-                
-                #right hand
-                if lm[3] == 1:
-                    if lm[0] == 8: right_tip = lm[2]
-                    if lm[0] == 6: right_pip = lm[2]
-            
-            # update x
-            if left_tip < left_pip and right_tip > right_pip:
-                next_pos.x += 1; game.moved = True
-            if left_tip > left_pip and right_tip < right_pip:
-                next_pos.x -= 1; game.moved = True
-                
-            # update y
-            if left_tip < left_pip and right_tip < right_pip:
-                next_pos.y -= 1; game.moved = True
-            if left_tip > left_pip and right_tip > right_pip:
-                next_pos.y += 1; game.moved = True
-                
-            if game.moved:
-                if game.is_valid_pos(next_pos) and game.player_elapsed >= PLAYER_TIME_STEP:
-                    game.pac_man = next_pos
-                    game.player_elapsed = 0
-                else:
-                    game.player_elapsed = PLAYER_TIME_STEP
-        
-        if game.monster_elapsed >= MONSTER_TIME_STEP:
-            monster_path = bfs(game.pac_man, game.monster)
-            if len(monster_path) > 1:
-                game.monster = monster_path[1]
-                game.monster_elapsed = 0
+            if game.monster_elapsed >= MONSTER_TIME_STEP:
+                monster_path = bfs(game.pac_man, game.monster)
+                if len(monster_path) > 1:
+                    game.monster = monster_path[1]
+                    game.monster_elapsed = 0
 
-        if game.pac_man.x == game.monster.x and game.pac_man.y == game.monster.y:
-            game.pac_man = cell(1, 1)
-            game.monster = cell(10, 9)
+            # Game over check
+            if game.pac_man.x == game.monster.x and game.pac_man.y == game.monster.y:          
+                game_over = True
+                game_over_timer = 0.0
+        
+        else:
+            game_over_timer += rl.GetFrameTime()
+            if game_over_timer >= GAME_OVER_DURATION:
+                game_over = False
+                game.pac_man = cell(1, 1)
+                game.monster = cell(10, 9)
 
         rl.BeginDrawing()
         
@@ -74,6 +86,13 @@ def main():
 
         rl.DrawCircleV(game.center_calc(game.pac_man), TILE_SIZE // 2, rl.YELLOW)
         rl.DrawCircleV(game.center_calc(game.monster), TILE_SIZE // 2, rl.RED)
+        
+        if game_over:
+            font_size = 100
+            text_width = rl.MeasureText(GAME_OVER_TEXT, font_size)
+            x = (COLS * TILE_SIZE - text_width) // 2
+            y = (ROWS * TILE_SIZE - font_size) // 2
+            rl.DrawText(GAME_OVER_TEXT, x, y, font_size, rl.WHITE)
 
         rl.EndDrawing()
         cv.imshow("Img", frame)
